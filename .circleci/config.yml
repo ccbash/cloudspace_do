@@ -54,7 +54,7 @@ jobs:
             ./terraform apply -input=false build.tfplan
       - add_ssh_keys:
           fingerprints:
-            - "f5:e0:5f:7a:3b:42:f0:6a:97:f0:96:97:3b:bf:8d:27"
+            - "80:5f:c6:dc:47:20:80:1f:7b:bf:63:f2:bc:b7:24:a1"
       - run:
           name: running molecule tests
           working_directory: ./cm
