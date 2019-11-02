@@ -85,7 +85,7 @@ jobs:
 
 workflows:
   version: 2
-  check_test_deploy:
+  validate_test_deploy:
     jobs:
       - validate_cm
       - validate_iac
@@ -98,7 +98,7 @@ workflows:
               only: master
       - deploy_cm:
           requires:
-            - infra_testing
+            - deploy_iac
           filters:
             branches:
               only: master
