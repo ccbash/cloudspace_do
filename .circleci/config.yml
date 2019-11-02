@@ -1,7 +1,7 @@
 ---
 version: 2.1
 
-executors:
+executors:  
   ansible:
     docker:
       - image: "quay.io/ansible/molecule:2.22"
