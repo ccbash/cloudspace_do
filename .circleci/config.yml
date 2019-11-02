@@ -88,26 +88,26 @@ workflows:
   validate_test_deploy:
     jobs:
       - validate_cm:
-          filter:
+          filters:
             branches: 
               ignore: ["prod_cloud"]
       - validate_iac:
-          filter:
+          filters:
             branches: 
               ignore: ["prod_cloud"]
       - test_cm:
           requires:
             - validate_cm
-          filter:
+          filters:
             branches: 
               ignore: ["prod_cloud"]
       - deploy_iac:
-          filter:
+          filters:
             branches:
               only: ["prod_cloud"]
       - deploy_cm:
           requires:
             - deploy_iac
-          filter:
+          filters:
             branches:
               only: ["prod_cloud"]
