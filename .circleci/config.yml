@@ -92,11 +92,11 @@ workflows:
       - test_cm:
           requires:
             - validate_cm
-      - deploy_iac
+      - deploy_iac:
           filters:
             branches:
               only: master
-      - deploy:
+      - deploy_cm:
           requires:
             - infra_testing
           filters:
