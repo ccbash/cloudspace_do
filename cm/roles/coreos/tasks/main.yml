@@ -1,0 +1,24 @@
+---
+
+- name: "CoreOS - Python"
+  import_tasks: "coreos_python.yml"
+
+- name: "CoreOS - Pip"
+  import_tasks: "coreos_pip.yml"
+
+- name: "CoreOS - Network"
+  import_tasks: "coreos_network.yml"
+  when:
+    - 'ansible_connection != "docker"'
+
+- name: "CoreOS - SSHD"
+  include_tasks: "coreos_sshd.yml"
+  when:
+    - 'ansible_connection != "docker"'
+    - 'coreos_sshport | bool'
+
+- name: "CoreOS - Journaldforwader"
+  import_tasks: "coreos_journaldforwarder.yml"
+
+- name: "CoreOS - User"
+  import_tasks: "coreos_user.yml"

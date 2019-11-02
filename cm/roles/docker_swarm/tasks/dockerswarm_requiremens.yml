@@ -1,0 +1,8 @@
+---
+
+- name: "DOCKER SWARM Requirements - docker-py"
+  pip:
+    name: docker-py
+    state: present
+  environment:
+    PATH: /opt/bin

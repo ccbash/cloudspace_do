@@ -1,0 +1,36 @@
+---
+
+- name: "COREOS PIP - state"
+  stat:
+    path: '{{ coreos_pip_bin }}'
+  register: "pip"
+
+- name: "COREOS PIP - setup block"
+  when: not pip.stat.exists
+  block:
+
+    - name: "COREOS PIP - download"
+      get_url:
+        url: '{{ coreos_pip_url }}{{ coreos_pip_script }}'
+        dest: "/tmp"
+
+    - name: "COREOS PIP - run install script"
+      command: '{{ ansible_python_interpreter }} /tmp/{{ coreos_pip_script }}'
+
+    - name: "COREOS PIP - clean up"
+      file:
+        path: '/tmp/{{ coreos_pip_script }}"'
+        state: "absent"
+
+    - name: "COREOS PIP - directory for link"
+      become: true
+      file:
+        path: '{{ coreos_pip_bin | dirname }}'
+        state: directory
+
+    - name: "COREOS PIP - link"
+      become: true
+      file:
+        src: '{{ coreos_pypy_dir }}/bin/pip'
+        dest: '{{ coreos_pip_bin }}'
+        state: link

@@ -1,0 +1,54 @@
+---
+
+- hosts: all
+  gather_facts: false
+  tasks:
+
+    - name: "MAIN - SSH Connection Trial (bootstraping)"
+      when:
+        - 'ansible_connection == "ssh"'
+      block:
+        - name: "MAIN - Check SSH Port"
+          delegate_to: localhost
+          wait_for:
+            port: '{{ ansible_ssh_port }}'
+            host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
+            search_regex: OpenSSH
+            timeout: 30
+
+      rescue:
+        - name: "MAIN - Setting SSH Defaults"
+          set_fact:
+            coreos_sshport: '{{ ansible_ssh_port }}'
+            ansible_ssh_port: 22
+
+        - name: "MAIN - Check SSH Port (rescue)"
+          delegate_to: localhost
+          wait_for:
+            port: '{{ ansible_ssh_port }}'
+            host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
+            search_regex: OpenSSH
+            timeout: 30
+
+    - name: "MAIN - Add Host"
+      add_host:
+        groups: '{{ os }}'
+      when:
+        - os is defined
+
+- hosts: COREOS
+  gather_facts: false
+
+  roles:
+    - coreos
+
+- hosts: DOCKER_SWARM
+  gather_facts: true
+
+  pre_tasks:
+    - name: "debug - hostvars"
+      debug:
+        var: hostvars[inventory_hostname]
+
+  roles:
+    - docker_swarm

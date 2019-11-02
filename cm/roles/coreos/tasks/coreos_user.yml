@@ -1,0 +1,15 @@
+---
+
+- name: "CoreOS USER - authorized keys"
+  authorized_key:
+    user: "{{ coreos_sshuser }}"
+    state: "present"
+    key: "{{ item }}"
+  loop: "{{ coreos_sshkeys }}"
+
+- name: "CoreOS USER - remove authorized keys"
+  authorized_key:
+    user: "{{ coreos_sshuser }}"
+    state: "absent"
+    key: "{{ item }}"
+  loop: "{{ coreos_remove_sshkeys }}"

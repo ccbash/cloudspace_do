@@ -1,0 +1,104 @@
+---
+version: 2.1
+
+executors:
+  ansible:
+    docker:
+      - image: "quay.io/ansible/molecule:2.22"
+  terraform:
+    docker: 
+      - image: "hashicorp/terraform:light"
+        entrypoint: "/usr/bin/env"
+        environment: 
+          PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+jobs:
+
+  validate_cm:
+    executor: ansible
+    steps:
+      - checkout
+      - run:
+          name: check configuration management (ansible)
+          working_directory: ./cm
+          command: |
+            molecule test --scenario-name syntax_linting
+
+  validate_iac:
+    executor: terraform
+    steps:
+      - checkout          
+      - run:
+          name: check iac (terraform)
+          working_directory: ./iac
+          command: |
+            terraform init
+            terraform validate
+            terraform plan
+
+  test_cm:
+    executor: ansible
+    steps:
+      - checkout
+      - run:
+          name: install and init terraform
+          working_directory: ./cm/molecule/default/terraform
+          command: |
+            wget https://releases.hashicorp.com/terraform/0.12.12/terraform_0.12.12_linux_amd64.zip
+            unzip terraform_0.12.12_linux_amd64.zip
+            ./terraform init
+      - run:
+          name: build TestInfra (terraform)
+          working_directory: ./cm/molecule/default/terraform
+          command: |
+            ./terraform plan -out build.tfplan
+            ./terraform apply -input=false build.tfplan
+      - add_ssh_keys:
+          fingerprints:
+            - "f5:e0:5f:7a:3b:42:f0:6a:97:f0:96:97:3b:bf:8d:27"
+      - run:
+          name: running molecule tests
+          working_directory: ./cm
+          command: molecule test
+      - run:
+          name: cleanup TestInfra (terraform)
+          working_directory: ./cm/molecule/default/terraform
+          command: |
+           ./terraform plan -destroy -out destroy.tfplan
+           ./terraform apply -input=false destroy.tfplan
+          when: always
+
+  deploy_iac:
+    executor: terraform
+    steps:
+      - checkout
+      - run:
+          working_directory: ./iac
+          command: ansible-playbook main.yml
+
+  deploy_cm:
+    executor: ansible
+    steps:
+      - checkout
+      - run:
+          working_directory: ./cm
+          command: ansible-playbook main.yml
+
+workflows:
+  version: 2
+  check_test_deploy:
+    jobs:
+      - validate_cm
+      - validate_iac
+      - test_cm:
+          requires:
+            - validate_cm
+      - deploy_iac
+          filters:
+            branches:
+              only: master
+      - deploy:
+          requires:
+            - infra_testing
+          filters:
+            branches:
+              only: master

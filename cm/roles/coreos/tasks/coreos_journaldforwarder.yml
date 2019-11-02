@@ -1,0 +1,16 @@
+---
+
+- name: "Jounald-forwarder service file"
+  become: true
+  notify: restart Journaldforwarder
+  template:
+    src: "journald-forwarder.service"
+    dest: "/etc/systemd/system/"
+    mode: 0644
+
+- name: "Journal-forwarder service - state"
+  become: true
+  systemd:
+    name: "journald-forwarder"
+    state: "started"
+    enabled: true

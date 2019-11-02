@@ -1,0 +1,36 @@
+---
+
+# - name: "COREOS NETWORK - Hostname"
+#   become: true
+#   hostname:
+#     name: "{{ inventory_hostname }}{{ coreos_domain }}"
+
+# HOSTS: WEB
+- name: "COREOS NETWORK - Hetzner Failover IP"
+  become: true
+  notify: restart network
+  template:
+    src: "20-multi_ip.network.j2"
+    dest: "/etc/systemd/network/20-multi_ip.network"
+    mode: 0644
+  when:
+    - hetzner_failover_ip is defined
+
+# HOSTS: ELASTICSEARCH
+- name: "COREOS NETWORK - Hetzner Cloud Floating IP"
+  become: true
+  notify: restart network
+  template:
+    src: "static.network.j2"
+    dest: "/etc/systemd/network/static.network"
+    mode: 0644
+  when:
+    - hetzner_cloud_floating_ip is defined
+
+- name: "COREOS NETWORK - Blacklist IPs"
+  become: true
+  iptables:
+    chain: INPUT
+    source: '{{ item }}'
+    jump: DROP
+  loop: '{{ coreos_blacklisted_ips }}'

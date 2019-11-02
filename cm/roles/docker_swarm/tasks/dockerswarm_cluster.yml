@@ -1,0 +1,28 @@
+---
+
+- name: "DOCKER SWARM Cluster: first manager"
+  docker_swarm:
+    state: "present"
+    listen_addr: '{{ dockerswarm_addr }}'
+    advertise_addr: '{{ dockerswarm_addr }}'
+  register: swarm
+  when:
+    - 'inventory_hostname == dockerswarm_controller'
+
+- name: "DOCKER SWARM Cluster: nodes"
+  docker_swarm:
+    state: join
+    listen_addr: '{{ dockerswarm_addr }}'
+    advertise_addr: '{{ dockerswarm_addr }}'
+    join_token: '{{ hostvars[dockerswarm_controller]["swarm"]["swarm_facts"]["JoinTokens"][dockerswarm_nodetype] }}'
+    remote_addrs: '{{ hostvars[dockerswarm_controller]["dockerswarm_addr"] }}'
+  when:
+    - 'inventory_hostname != dockerswarm_controller'
+
+- name: "DOCKER SWARM Cluster: labels"
+  docker_node:
+    hostname: '{{ inventory_hostname }}'
+    labels:
+      test: "value"
+  when:
+    - 'dockerswarm_labels | length > 0'

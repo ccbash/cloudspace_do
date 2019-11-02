@@ -1,0 +1,28 @@
+---
+
+- name: "restart Journaldforwarder"
+  become: true
+  systemd:
+    name: "journald-forwarder"
+    state: "restarted"
+    daemon_reload: true
+
+- name: "restart SSHD Service"
+  listen: "restart SSHD"
+  become: true
+  systemd:
+    name: "sshd.socket"
+    state: "restarted"
+    daemon_reload: true
+
+- name: "restart SSHD - change Port"
+  listen: "restart SSHD"
+  set_fact:
+    ansible_ssh_port: "{{ coreos_sshport }}"
+
+- name: "restart network"
+  become: true
+  systemd:
+    name: "networkd"
+    state: "restarted"
+    daemon_reload: true

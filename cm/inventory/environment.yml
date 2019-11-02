@@ -1,0 +1,12 @@
+---
+
+STAGING:
+  vars:
+    io_mimi_environment: "staging"
+    dockerswarm_controller: "stag-2.mimi.io"
+
+  hosts:
+    stag-2.mimi.io:
+    stag-3.mimi.io:
+    stag-4.mimi.io:
+    stag-logs.mimi.io:

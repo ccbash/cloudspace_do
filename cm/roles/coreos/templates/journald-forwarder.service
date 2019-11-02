@@ -1,0 +1,13 @@
+[Unit]
+Description=Journald forwarder
+After=systemd-journald.service
+Requires=systemd-journald.service
+
+[Service]
+ExecStart=/bin/sh -c "journalctl -f -o json | ncat localhost:5000"
+TimeoutStartSec=0
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

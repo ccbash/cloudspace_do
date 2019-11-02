@@ -1,0 +1,42 @@
+---
+
+- name: "COREOS PYTHON - check python state"
+  raw: '[ -f {{ ansible_python_interpreter }} ] && echo "exist" || echo "missing"'
+  register: "python"
+  changed_when: false
+  tags:
+    - skip_ansible_lint
+
+- name: "COREOS PYTHON - setup block"
+  when: '"missing" in python.stdout'
+  block:
+
+    - name: "COREOS PYTHON - download"
+      raw: 'wget {{ coreos_pypy_url }} -O /tmp/{{ coreos_pypy_archive }}'
+      tags:
+        - skip_ansible_lint
+
+    - name: "COREOS PYTHON - destination directory"
+      raw: 'mkdir -p {{ coreos_pypy_dir }}'
+      tags:
+        - skip_ansible_lint
+
+    - name: "COREOS PYTHON - extract"
+      raw: 'tar xf /tmp/{{ coreos_pypy_archive }} -C {{ coreos_pypy_dir }}/ --strip-components=1'
+      tags:
+        - skip_ansible_lint
+
+    - name: "COREOS PYTHON - clean"
+      raw: 'rm -rf /tmp/{{ coreos_pypy_archive }}'
+      tags:
+        - skip_ansible_lint
+
+    - name: "COREOS PYTHON - link directory"
+      raw: 'sudo mkdir -p {{ ansible_python_interpreter | dirname }}'
+      tags:
+        - skip_ansible_lint
+
+    - name: "COREOS PYTHON - link"
+      raw: 'sudo ln -s {{ coreos_pypy_dir }}/bin/pypy {{ ansible_python_interpreter }}'
+      tags:
+        - skip_ansible_lint

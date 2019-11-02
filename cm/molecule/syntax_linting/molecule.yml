@@ -1,0 +1,38 @@
+---
+
+driver:
+  name: delegated
+  options:
+    managed: false
+    ansible_connection_options:
+      ansible_connection: ssh
+
+scenario:
+  name: syntax_linting
+  test_sequence:
+    - lint
+    - syntax
+
+platforms:
+  - name: ansible-coreos01
+    groups:
+      - COREOS
+      - DOCKER_SWARM
+
+provisioner:
+  name: ansible
+  log: true
+  playbooks:
+    converge: ../../main.yml
+  options:
+    D: true
+  lint:
+    name: ansible-lint
+    options:
+      x: ["ANSIBLE0013"]
+      force-color: true
+
+lint:
+  name: yamllint
+  options:
+    config-file: molecule/syntax_linting/yaml-lint.yml

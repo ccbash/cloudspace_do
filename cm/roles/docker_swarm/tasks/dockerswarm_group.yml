@@ -1,0 +1,9 @@
+---
+
+- name: Add the Docker administrators to the Docker group
+  become: true
+  user:
+    name: "{{ item }}"
+    groups: "{{ docker_group }}"
+    append: true
+  with_items: "{{ docker_admin_users }}"

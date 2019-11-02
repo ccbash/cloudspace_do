@@ -1,0 +1,59 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: delegated
+  options:
+    managed: false
+    ansible_connection_options:
+      ansible_connection: ssh
+      ansible_ssh_user: coreos
+lint:
+  name: yamllint
+#  options:
+#    config-file: molecule/default/yaml-lint.yml
+
+platforms:
+  - name: ansible-coreos01
+    region: fra1
+    image: coreos-stable
+    size: s-1vcpu-1gb
+    private_networking: true
+    ssh_user: core
+    groups:
+      - COREOS
+      - DOCKER_SWARM
+
+provisioner:
+  name: ansible
+  log: true
+  playbooks:
+    converge: ../../main.yml
+  options:
+    D: true
+  lint:
+    name: ansible-lint
+    options:
+      x: ["ANSIBLE0013"]
+      force-color: true
+  inventory:
+    links:
+      host_vars: terraform/host_vars/
+
+verifier:
+  name: testinfra
+  lint:
+    name: flake8
+
+scenario:
+  name: default
+  test_sequence:
+    - dependency
+    - create
+    - prepare
+    - converge
+    - idempotence
+    # - side_effect
+    - verify
+    - destroy

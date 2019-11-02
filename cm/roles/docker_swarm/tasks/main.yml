@@ -1,0 +1,10 @@
+---
+
+- name: "DOCKER Swarm - Phython requirements"
+  import_tasks: "dockerswarm_requiremens.yml"
+
+- name: "DOCKER Swarm - Usergoup"
+  import_tasks: "dockerswarm_group.yml"
+
+- name: "DOCKER Swarm - Swarm setup"
+  import_tasks: "dockerswarm_cluster.yml"

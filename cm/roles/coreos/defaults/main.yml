@@ -1,0 +1,22 @@
+---
+
+# Network
+coreos_blacklisted_ips: []
+coreos_domain: ".ansible.local"
+
+# SSH authorised Keys for ssh_user
+coreos_sshport: ""
+coreos_sshuser: "core"
+coreos_sshkeys: []
+coreos_remove_sshkeys: []
+
+coreos_pypy_dir: '/home/core/lib/pypy-{{ coreos_pypy_version }}'
+coreos_pypy_version: 7.2.0
+coreos_pypy_archive: 'pypy-{{ coreos_pypy_version }}-linux_x86_64-portable.tar.bz2'
+coreos_pypy_url: 'https://github.com/squeaky-pl/portable-pypy/releases/download/pypy-{{ coreos_pypy_version }}/{{ coreos_pypy_archive }}'
+
+coreos_pip_bin: "/opt/bin/pip"
+coreos_pip_url: "https://bootstrap.pypa.io/"
+coreos_pip_script: "get-pip.py"
+
+ansible_python_interpreter: "/opt/bin/python"

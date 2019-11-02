@@ -1,0 +1,23 @@
+---
+
+- name: "CoreOS SSHD - service folder"
+  become: true
+  file:
+    path: "/etc/systemd/system/sshd.socket.d"
+    state: "directory"
+
+- name: "CoreOS SSHD - config File"
+  become: true
+  notify: "restart SSHD"
+  register: sshd_config
+  template:
+    src: "10-sshd-listen-ports.conf.j2"
+    dest: "/etc/systemd/system/sshd.socket.d/10-sshd-listen-ports.conf"
+    mode: 0644
+
+- name: "CoreOS SSHD - service state"
+  become: true
+  systemd:
+    name: "sshd.socket"
+    state: "started"
+    enabled: true

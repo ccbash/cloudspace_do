@@ -1,0 +1,13 @@
+---
+
+dockerswarm_interface: "{{ ansible_default_ipv4.interface }}"
+dockerswarm_ip: "{{ hostvars[inventory_hostname]['ansible_' + dockerswarm_interface]['ipv4']['address'] }}"
+dockerswarm_port: "2377"
+dockerswarm_addr: "{{ dockerswarm_ip }}:{{ dockerswarm_port }}"
+
+docker_admin_users: []
+docker_group: "docker"
+
+dockerswarm_nodetype: "manager"
+dockerswarm_labels: {}
+dockerswarm_controller: "{{ inventory_hostname }}"
