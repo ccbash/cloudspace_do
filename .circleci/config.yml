@@ -15,8 +15,6 @@ jobs:
 
   validate_cm:
     executor: ansible
-    branches: 
-      ignore: ["prod_cloud"]
     steps:
       - checkout
       - run:
@@ -27,8 +25,6 @@ jobs:
 
   validate_iac:
     executor: terraform
-    branches: 
-      ignore: ["prod_cloud"]
     steps:
       - checkout          
       - run:
@@ -41,8 +37,6 @@ jobs:
 
   test_cm:
     executor: ansible
-    branches: 
-      ignore: ["prod_cloud"]
     steps:
       - checkout
       - run:
@@ -75,8 +69,6 @@ jobs:
 
   deploy_iac:
     executor: terraform
-    branches: 
-      only: ["prod_cloud"]
     steps:
       - checkout
       - run:
@@ -85,8 +77,6 @@ jobs:
 
   deploy_cm:
     executor: ansible
-    branches: 
-      only: ["prod_cloud"]
     steps:
       - checkout
       - run:
@@ -97,13 +87,27 @@ workflows:
   version: 2
   validate_test_deploy:
     jobs:
-      - validate_cm
-      - validate_iac
+      - validate_cm:
+          filter:
+            branches: 
+              ignore: ["prod_cloud"]
+      - validate_iac:
+          filter:
+            branches: 
+              ignore: ["prod_cloud"]
       - test_cm:
           requires:
             - validate_cm
-      - deploy_iac
+          filter:
+            branches: 
+              ignore: ["prod_cloud"]
+      - deploy_iac:
+          filter:
+            branches:
+              only: ["prod_cloud"]
       - deploy_cm:
           requires:
             - deploy_iac
-
+          filter:
+            branches:
+              only: ["prod_cloud"]
