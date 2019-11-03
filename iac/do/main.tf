@@ -6,7 +6,7 @@
 module "frontend" {
    source = "./frontend"
    
-   name       = var.name
+   name       = "fe"
    domain     = var.domain
    region     = var.region
    ssh_key    = digitalocean_ssh_key.ansible
@@ -20,7 +20,7 @@ module "frontend" {
 module "backend" {
    source = "./backend"
    
-   name       = "be.${var.name}"
+   name       = "be"
    domain     = var.domain
    region     = var.region
    ssh_key    = digitalocean_ssh_key.ansible

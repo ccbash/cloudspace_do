@@ -99,6 +99,7 @@ workflows:
       - test_cm:
           requires:
             - validate_cm
+            - validate_iac
           filters:
             branches: 
               ignore: ["prod_cloud"]

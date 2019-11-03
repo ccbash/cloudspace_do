@@ -26,7 +26,7 @@ resource "digitalocean_droplet" "this" {
 
 module "dns_consul" {
    source     = "../../network/dns_entry"
-   zone       = var.domain
+   zone       = var.subnet.domain
    record     = var.name
    typ        = "A"
    values     = [ digitalocean_droplet.this.ipv4_addressp ] 
@@ -34,7 +34,7 @@ module "dns_consul" {
 
 module "dns_consul_aaaa" { 
    source     = "../../network/dns_entry"
-   zone       = var.domain
+   zone       = var.subnet.domain
    record     = var.name
    typ        = "AAAA"
    values     = [ digitalocean_droplet.this.ipv6_address ] 

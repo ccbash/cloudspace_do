@@ -7,6 +7,7 @@ module "subnet" {
 
    name     = var.name
    avz      = var.region
+   domain   = var.domain
 }
 
 /* ***************************************************************
@@ -21,6 +22,5 @@ module "docker1" {
   instance_type = "s-1vcpu-1gb"  
   ssh_key       = var.ssh_key
   subnet        = var.subnet
-  domain        = var.domain
   ingress_ports  = [ [22, "tcp"] ]
 }

@@ -7,6 +7,7 @@ module "subnet" {
 
    name   = var.name
    avz    = var.region
+   domain = var.domain
 }
 
 /* ***************************************************************
