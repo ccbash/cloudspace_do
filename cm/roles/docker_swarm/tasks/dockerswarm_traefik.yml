@@ -34,10 +34,10 @@
         published_port: 80
         mode: ingress
       - target_port: 443
-        published: 443
+        published_port: 443
         mode: ingress
       - target_port: 8080
-        published: 8080
+        published_port: 8080
         mode: ingress
     mode: replicated
     replicas: 1

@@ -1,0 +1,51 @@
+---
+
+- name: Set command and arguments
+  docker_swarm_service:
+    name: mariadb
+    image: mariadb
+    environment:
+      - MYSQL_USER=wp
+      - MYSQL_DATABASE=wp
+      - MYSQL_PASSWORD=test
+      - MYSQL_ROOT_PASSWORD=rootpw
+    mounts:
+      - source: mariadb_vol
+        target: /var/lib/mysql
+    networks:
+      - wp_endo
+    mode: replicated
+    replicas: 1
+#    placement:
+#      constraints:
+#        - node.role == worker
+    restart_config:
+      condition: on-failure
+
+- name: Set command and arguments
+  docker_swarm_service:
+    name: wordpress
+    image: wordpress
+    environment:
+      - WORDPRESS_DB_USER=wp
+      - WORDPRESS_DB_NAME=wp
+      - WORDPRESS_DB_PASSWORD=test
+      - WORDPRESS_DB_HOST=mariadb
+    mounts:
+      - source: wp_content
+        target: /var/www/html/wp-content
+    networks:
+      - wp_endo
+      - traefik
+    mode: replicated
+    replicas: 1
+#    placement:
+#      constraints:
+#        - node.role == worker
+    restart_config:
+      condition: on-failure
+    labels:
+      - "traefik.backend.loadbalancer.swarm=true"
+      - "traefik.port=80"
+      - "traefik.frontend.rule=Host:wp.maddevs.io"
+      - "traefik.docker.network=traefik"
