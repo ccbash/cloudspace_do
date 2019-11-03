@@ -29,7 +29,7 @@ module "dns_consul" {
    zone       = var.subnet.domain
    record     = var.name
    typ        = "A"
-   values     = [ digitalocean_droplet.this.ipv4_addressp ] 
+   values     = [ digitalocean_droplet.this.ipv4_address ] 
 } 
 
 module "dns_consul_aaaa" { 
