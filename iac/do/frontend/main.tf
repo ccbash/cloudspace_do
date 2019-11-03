@@ -21,7 +21,7 @@ module "control" {
   image          = "coreos-stable"
   instance_type  = "s-1vcpu-1gb"  
   ssh_key        = var.ssh_key
-  subnet         = var.subnet
+  subnet         = module.subnet
   ingress_ports  = [ [22, "tcp"], [ 80, "tcp"], [ 8080, "tcp"], [ 443, "tcp"]  ]
 }
 

@@ -21,6 +21,6 @@ module "docker1" {
   image         = "coreos-stable"
   instance_type = "s-1vcpu-1gb"  
   ssh_key       = var.ssh_key
-  subnet        = var.subnet
-  ingress_ports  = [ [22, "tcp"] ]
+  subnet        = module.subnet
+  ingress_ports = [ [22, "tcp"] ]
 }
