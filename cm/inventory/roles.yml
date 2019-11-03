@@ -24,7 +24,7 @@ DOCKER_SWARM:
             'ccbash.environment': "{{environment}}"
 
 SERVICES:
-  
+
   children:
     ENDO_SHG:
       vars:

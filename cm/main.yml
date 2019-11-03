@@ -47,9 +47,9 @@
 
   roles:
     - docker_swarm
-    
+
 - hosts: SERVICES
   gather_facts: true
 
-  roles: 
+  roles:
     - wp_endo

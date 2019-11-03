@@ -11,8 +11,6 @@ driver:
       ansible_ssh_user: coreos
 lint:
   name: yamllint
-#  options:
-#    config-file: molecule/default/yaml-lint.yml
 
 platforms:
   - name: ansible-coreos01
@@ -24,6 +22,7 @@ platforms:
     groups:
       - COREOS
       - DOCKER_SWARM
+      - SERVICES
 
 provisioner:
   name: ansible
