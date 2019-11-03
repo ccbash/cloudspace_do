@@ -45,10 +45,5 @@
 - hosts: DOCKER_SWARM
   gather_facts: true
 
-  pre_tasks:
-    - name: "debug - hostvars"
-      debug:
-        var: hostvars[inventory_hostname]
-
   roles:
     - docker_swarm
