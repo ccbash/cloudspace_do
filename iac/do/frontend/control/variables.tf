@@ -2,8 +2,7 @@
  * Variables
  * ************************************************************ */
 
-variable "name"             { }
-variable "domain"           { }
-variable "region"           { }
-
-variable "ssh_key"          { }
+variable "name"    { }
+variable "domain"  { }
+variable "subnet"  { }
+variable "ssh_key" { }

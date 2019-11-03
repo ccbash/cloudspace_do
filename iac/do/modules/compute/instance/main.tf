@@ -25,3 +25,18 @@ resource "digitalocean_droplet" "this" {
   user_data           = var.user_data
 }
 
+module "dns_consul" {
+   source     = "../../../modules/dns_entry"
+   zone       = var.domain
+   record     = var.name
+   typ        = "A"
+   values     = [ digitalocean_droplet.this.public_ip ] 
+} 
+
+module "dns_consul_aaaa" { 
+   source     = "../../../modules/dns_entry"
+   zone       = var.domain
+   record     = "@"
+   typ        = "AAAA"
+   values     = digitalocean_droplet.this.ipv6 
+}

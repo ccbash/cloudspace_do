@@ -3,13 +3,12 @@
  * Infrastructur Net
  * ************************************************************ */
 
-module "infra" {
-   source = "./infra"
+module "frontend" {
+   source = "./frontend"
    
-   name       = "infra"
+   name       = var.name
    domain     = var.domain
    region     = var.region
-   
    ssh_key    = digitalocean_ssh_key.ansible
 }
 
@@ -18,15 +17,13 @@ module "infra" {
  * Compute Cluster (public)
  * ************************************************************ */
 
-module "common_compute" {
-   source = "./common_compute"
+module "backend" {
+   source = "./backend"
    
-   name       = "common"
+   name       = "be.${var.name}"
    domain     = var.domain
    region     = var.region
-
    ssh_key    = digitalocean_ssh_key.ansible
-   servicediscovery = module.infra.servicediscovery
 }
 
 

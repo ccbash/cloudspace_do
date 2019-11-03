@@ -13,12 +13,14 @@ module "subnet" {
  * Instances
  * ************************************************************ */
 
-module "docker_host1" {
-  source  = "./docker_host"
+module "docker1" {
+  source = "../modules/compute/instance"
   
-  name    = "${var.name}.docker"
-  domain  = var.domain
-  subnet  = module.subnet
-  ssh_key = var.ssh_key
-  servicediscovery = var.servicediscovery
+  name          = "docker1.${var.name}"
+  image         = "coreos-stable"
+  instance_type = "s-1vcpu-1gb"  
+  ssh_key       = var.ssh_key
+  subnet        = var.subnet
+  domain        = var.domain
+  ingress_ports  = [ [22, "tcp"] ]
 }

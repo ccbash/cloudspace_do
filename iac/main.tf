@@ -21,7 +21,6 @@ terraform {
 variable "name"   { default = "do" }
 variable "domain" { default = "ccbash.de" }
 variable "region" { default = "FRA1" }
-variable "cidr"   { default = "10.1.0.0/16" }
 
 /* ***************************************************************
  * Provider
@@ -32,7 +31,7 @@ provider "digitalocean" {
 
 
 /* ***************************************************************
- * AWS Infra
+ * DO Infra
  * ************************************************************ */
  
 module "zone_dns" {
