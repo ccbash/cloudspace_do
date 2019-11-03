@@ -22,21 +22,20 @@ resource "digitalocean_droplet" "this" {
   ipv6                = var.subnet.ipv6_enabled
   private_networking  = true
   ssh_keys            = [ var.ssh_key.id ]
-  user_data           = var.user_data
 }
 
 module "dns_consul" {
-   source     = "../../../modules/dns_entry"
+   source     = "../../network/dns_entry"
    zone       = var.domain
    record     = var.name
    typ        = "A"
-   values     = [ digitalocean_droplet.this.public_ip ] 
+   values     = [ digitalocean_droplet.this.ipv4_addressp ] 
 } 
 
 module "dns_consul_aaaa" { 
-   source     = "../../../modules/dns_entry"
+   source     = "../../network/dns_entry"
    zone       = var.domain
-   record     = "@"
+   record     = var.name
    typ        = "AAAA"
-   values     = digitalocean_droplet.this.ipv6 
+   values     = [ digitalocean_droplet.this.ipv6_address ] 
 }

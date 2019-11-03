@@ -25,15 +25,15 @@ module "instance" {
 }
 
 module "dns_consul" {
-   source     = "../../../modules/dns_entry"
+   source     = "../modules/network/dns_entry"
    zone       = var.domain
    record     = "@"
    typ        = "A"
-   values     = [module.control.public_ip] 
+   values     = [module.control.ipv4] 
 } 
 
 module "dns_consul_aaaa" { 
-   source     = "../../../modules/dns_entry"
+   source     = "../modules/network/dns_entry"
    zone       = var.domain
    record     = "@"
    typ        = "AAAA"
