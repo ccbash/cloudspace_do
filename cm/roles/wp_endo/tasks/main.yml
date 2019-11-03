@@ -16,9 +16,9 @@
       - wp_endo
     mode: replicated
     replicas: 1
-#    placement:
-#      constraints:
-#        - node.role == worker
+    # placement:
+    #   constraints:
+    #     - node.role == worker
     restart_config:
       condition: on-failure
 
@@ -39,11 +39,11 @@
       - traefik
     mode: replicated
     replicas: 1
-#    placement:
-#      constraints:
-#        - node.role == worker
+    # placement:
+    #   constraints:
+    #    - node.role == worker
     restart_config:
-      condition: on-failure
+       condition: on-failure
     labels:
       - "traefik.backend.loadbalancer.swarm=true"
       - "traefik.port=80"
