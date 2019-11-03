@@ -1,0 +1,58 @@
+---
+- name: "DOCKER SWARM Traefik - Network"
+  docker_network:
+    name: web  
+
+- name: Set command and arguments
+  docker_swarm_service:
+    name: traefik
+    image: traefik:v2.0.0
+    command:
+      - "--api=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.swarmMode=true"
+      - "--providers.docker.network=web"
+      - "--docker.watch"
+      - "--entrypoints=Name:http Address::80 Redirect.EntryPoint:https"
+      - "--entrypoints=Name:https Address::443 TLS"
+      - "--defaultentrypoints=http,https"
+      - "--acme"
+      - "--acme.storage=/etc/traefik/acme/acme.json"
+      - "--acme.entryPoint=https"
+      - "--acme.httpChallenge.entryPoint=http"
+      - "--acme.OnHostRule=true"
+      - "--acme.onDemand=false"
+      - "--acme.email=cloudadmin@ccbash.de"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - web
+    publish:
+      - target_port: 80
+        published_port: 80
+        mode: ingress
+      - target_port: 443
+        published: 443
+        mode: ingress
+      - target_port: 8080
+        published: 8080
+        mode: ingress
+    mode: replicated
+    replicas: 1
+    placement:
+      constraints:
+        - node.role == manager
+    restart_config:
+      condition: on-failure
+
+- name: "DOCKER SWARM Traefik - whoami"
+  docker_swarm_service:
+    name: whoami:
+    image: containous/whoami
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.localhost`)"
+      - "traefik.http.routers.whoami.entrypoints=web"

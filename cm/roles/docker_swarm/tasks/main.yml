@@ -8,3 +8,8 @@
 
 - name: "DOCKER Swarm - Swarm setup"
   import_tasks: "dockerswarm_cluster.yml"
+
+- name: "DOCKER Swarm - Traefik"
+  include_tasks: "dockerswarm_traefik.yml"
+  when:
+    - 'inventory_hostname == dockerswarm_controller'
