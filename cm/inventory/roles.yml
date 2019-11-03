@@ -22,3 +22,12 @@ DOCKER_SWARM:
         docker1.do.ccbash.de:
           dockerswarm_labels:
             'ccbash.environment': "{{environment}}"
+
+SERVICES:
+  
+  children:
+    ENDO_SHG:
+      vars:
+        services: wp_endo
+      host:
+        www.endo-shg-berlin.de
