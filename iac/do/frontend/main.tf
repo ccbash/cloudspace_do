@@ -13,18 +13,22 @@ module "subnet" {
  * Instances
  * ************************************************************ */
 
-module "instance" {
-  source = "../../modules/compute/instance"
+module "control" {
+  source = "../modules/compute/instance"
   
-  name           = var.name
+  name           = "control.${var.name}"
   image          = "coreos-stable"
   instance_type  = "s-1vcpu-1gb"  
   ssh_key        = var.ssh_key
   subnet         = var.subnet
-  ingress_ports  = [ [22, "tcp"], [ 8500, "tcp" ], [ 8200, "tcp" ], [ 80, "tcp"], [ 8080, "tcp"], [ 443, "tcp"]  ]
+  ingress_ports  = [ [22, "tcp"], [ 80, "tcp"], [ 8080, "tcp"], [ 443, "tcp"]  ]
 }
 
-module "dns_consul" {
+/* ***************************************************************
+ * DNS Entries
+ * ************************************************************ */
+
+module "dns_control" {
    source     = "../modules/network/dns_entry"
    zone       = var.domain
    record     = "@"
@@ -32,7 +36,7 @@ module "dns_consul" {
    values     = [module.control.ipv4] 
 } 
 
-module "dns_consul_aaaa" { 
+module "dns_control_aaaa" { 
    source     = "../modules/network/dns_entry"
    zone       = var.domain
    record     = "@"

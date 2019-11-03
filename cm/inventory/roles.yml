@@ -3,7 +3,6 @@
 DOCKER_SWARM:
   vars:
     os: COREOS
-    ansible_ssh_port: 22422
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
 
   children:
@@ -12,38 +11,14 @@ DOCKER_SWARM:
       vars:
         dockerswarm_nodetype: "manager"
       hosts:
-        stag-2.mimi.io:
-          ansible_ssh_host: "138.201.250.8"
+        control.do.ccbash.de:
           dockerswarm_labels:
-            'io.mimi.public-ip': "{{hostvars[inventory_hostname]['ansible_default_ipv4']['address']}}"
-            'io.mimi.environment': "{{io_mimi_environment}}"
-            'io.mimi.run.logspout': true
-            'io.mimi.run.nginx': true
-            'io.mimi.run.mongo.primary': true
-        stag-3.mimi.io:
-          ansible_ssh_host: "138.201.19.19"
-          dockerswarm_labels:
-            'io.mimi.public-ip': "{{hostvars[inventory_hostname]['ansible_default_ipv4']['address']}}"
-            'io.mimi.environment': "{{io_mimi_environment}}"
-            'io.mimi.run.logspout': true
-            'io.mimi.run.nginx': true
-            'io.mimi.run.mongo.secondary.1': true
-        stag-4.mimi.io:
-          ansible_ssh_host: "88.99.105.32"
-          dockerswarm_labels:
-            'io.mimi.public-ip': "{{hostvars[inventory_hostname]['ansible_default_ipv4']['address']}}"
-            'io.mimi.environment': "{{io_mimi_environment}}"
-            'label-add io.mimi.run.logspout': true
-            'label-add io.mimi.run.nginx': true
-            'io.mimi.run.mongo.secondary.2': true
+            'ccbash.environment': "{{environment}}"
 
     DOCKER_SWARM_WORKER:
       vars:
         dockerswarm_nodetype: "worker"
       hosts:
-        stag-logs.mimi.io:
-          ansible_ssh_host: "116.203.243.113"
+        docker1.do.ccbash.de:
           dockerswarm_labels:
-            'io.mimi.public-ip': "{{hostvars[inventory_hostname]['ansible_default_ipv4']['address']}}"
-            'io.mimi.environment': "{{io_mimi_environment}}"
-            'io.mimi.run.logspout': true
+            'ccbash.environment': "{{environment}}"

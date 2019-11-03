@@ -2,11 +2,9 @@
 
 STAGING:
   vars:
-    io_mimi_environment: "staging"
-    dockerswarm_controller: "stag-2.mimi.io"
+    environment: "staging"
+    dockerswarm_controller: "control.do.ccbash.de"
 
   hosts:
-    stag-2.mimi.io:
-    stag-3.mimi.io:
-    stag-4.mimi.io:
-    stag-logs.mimi.io:
+    control.do.ccbash.de:
+    docker1.do.ccbash.de:
