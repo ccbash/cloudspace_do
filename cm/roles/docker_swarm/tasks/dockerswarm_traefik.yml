@@ -1,7 +1,7 @@
 ---
 - name: "DOCKER SWARM Traefik - Network"
   docker_network:
-    name: web  
+    name: web
 
 - name: Set command and arguments
   docker_swarm_service:
@@ -48,7 +48,7 @@
 
 - name: "DOCKER SWARM Traefik - whoami"
   docker_swarm_service:
-    name: whoami:
+    name: whoami
     image: containous/whoami
     networks:
       - web
