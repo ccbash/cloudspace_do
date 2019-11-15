@@ -24,6 +24,15 @@ resource "digitalocean_droplet" "this" {
   ssh_keys            = [ var.ssh_key.id ]
 }
 
+resource "local_file" "foo" {
+    content  = <<-EOT
+      ${var.name}:
+        ansible_ssh_host: ${digitalocean_droplet.this.ipv4_address}
+        ${ymlencode(ansible_vars)}
+      EOT
+    filename = "${path.root}/inventory/${var.name}.yml"
+}
+
 module "dns_consul" {
    source     = "../../network/dns_entry"
    zone       = var.subnet.domain

@@ -1,0 +1,10 @@
+---
+
+SERVICES:
+
+  children:
+    ENDO_SHG:
+      vars:
+        services: wp_endo
+      host:
+        www.endo-shg-berlin.de

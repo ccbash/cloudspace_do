@@ -23,4 +23,10 @@ module "docker1" {
   ssh_key       = var.ssh_key
   subnet        = module.subnet
   ingress_ports = [ [22, "tcp"] ]
+  ansible_vars   = { 
+        roles = [ "COREOS", "DOCKERSWARM" ]
+        dockerswarm_nodetype = "Manager"
+        dockerswarm_controller = "control.${var.name}"
+        ansible_ssh_user = "core"
+  }
 }

@@ -19,10 +19,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: check configuration management (ansible)
-          working_directory: ./cm
-          command: |
-            molecule test --scenario-name syntax_linting
+          name: "YAMl Linting"
+          command: yamllint .
+      - run:
+          name: "Ansible Linting"
+          command: ansible-lint main.yml
+      - run:
+          name: "Ansible Syntax Check"
+          command: ansible-playbook -i inventory main.yml --syntax-check
 
   validate_iac:
     executor: terraform
@@ -89,6 +93,7 @@ workflows:
   validate_test_deploy:
     jobs:
       - validate_cm:
+          context: $CIRCLE_BRANCH
           filters:
             branches: 
               ignore: ["prod_cloud"]

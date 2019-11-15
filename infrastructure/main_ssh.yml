@@ -1,0 +1,27 @@
+---
+
+- name: "MAIN - SSH Connection Trial (bootstraping)"
+  block:
+    - name: "MAIN SSH - try SSH Port"
+      delegate_to: localhost
+      wait_for:
+        port: '{{ ansible_ssh_port }}'
+        host: '{{ inventory_hostname }}'
+        search_regex: OpenSSH
+        timeout: 30
+
+  rescue:
+    - name: "MAIN SSH - fallback defaults port (rescue)"
+      when: 'os is defined'
+      set_fact:
+        coreos_sshport: '{{ ansible_ssh_port }}'
+        ansible_ssh_port: 22
+
+    - name: "MAIN SSH - try default port (rescue)"
+      delegate_to: localhost
+      when: 'os is defined'
+      wait_for:
+        port: '{{ ansible_ssh_port }}'
+        host: '{{ inventory_hostname }}'
+        search_regex: OpenSSH
+        timeout: 30

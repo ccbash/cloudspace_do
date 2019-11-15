@@ -10,6 +10,7 @@ variable "user_data"      { default = "" }
 variable "image"          { default = "" }
 variable "image_owner"    { default = "amazon" }
 variable "ingress_ports"  { default = [] }
+variable "ansible_vars"   { default = {} }
 
 variable "tags" {
   type        = map(string)

@@ -1,0 +1,15 @@
+---
+
+- hosts: all
+  gather_facts: false
+  tasks:
+
+    - name: "MAIN - SSH Connection Trial (bootstraping)"
+      include_tasks: main_ssh.yml
+      when:
+        - 'ansible_connection == "ssh"'
+
+- hosts: all
+  gather_facts: false
+
+  roles: '{{ roles }}'
