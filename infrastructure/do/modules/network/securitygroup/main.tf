@@ -5,7 +5,7 @@
  * ************************************************************ */
  
 resource "digitalocean_firewall" "this" {
-  name = "${var.name}"
+  name = "var.name"
 
   droplet_ids = [ var.instance_id ]
   
