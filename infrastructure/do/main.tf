@@ -6,12 +6,12 @@
 module "frontend" {
    source = "./frontend"
    
-   name       = "fe"
-   domain     = var.domain
-   region     = var.region
-   ssh_key    = digitalocean_ssh_key.ansible
+   name    = "fe"
+   domain  = var.domain
+   region  = var.region
+   ssh_key = digitalocean_ssh_key.ansible
    
-   hosts    = vars.infra.FRONTEND.hosts
+   hosts   = var.infra.FRONTEND.hosts
 }
 
 
@@ -22,12 +22,12 @@ module "frontend" {
 module "backend" {
    source = "./backend"
    
-   name       = "be"
-   domain     = var.domain
-   region     = var.region
-   ssh_key    = digitalocean_ssh_key.ansible
+   name    = "be"
+   domain  = var.domain
+   region  = var.region
+   ssh_key = digitalocean_ssh_key.ansible
    
-   hosts    = vars.infra.BACKEND.hosts
+   hosts   = var.infra.BACKEND.hosts
 }
 
 

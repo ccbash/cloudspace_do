@@ -40,8 +40,9 @@ provider "digitalocean" {
  * ************************************************************ */
  
 module "zone_dns" {
-   source      = "./do/modules/network/dns_zone"
-   zone        = "${local.cloud.vars.name}.${local.cloud.vars.domain}"
+  source = "./do/modules/network/dns_zone"
+
+  zone   = "${local.cloud.vars.name}.${local.cloud.vars.domain}"
 } 
 
 module "cloudspace_do" {
