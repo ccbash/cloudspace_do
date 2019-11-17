@@ -12,4 +12,7 @@
 - hosts: all
   gather_facts: false
 
-  roles: '{{ roles }}'
+  tasks:
+  - include_role:
+    loop: roles
+      name: {{ item }}

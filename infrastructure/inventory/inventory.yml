@@ -7,7 +7,7 @@ digitalocean:
     region: "FRA1"
     ansible_ssh_user: "core"
     dockerswarm_controller: "control.{{ domain }}"
-    roles: [ "COREOS", "DOCKERSWARM" ]
+    roles: [ "coreos", "docker_swarm" ]
 
   children:
     FRONTEND:
