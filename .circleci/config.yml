@@ -54,18 +54,20 @@ jobs:
         description: working directory
         type: string
         default: ./iac
-    working_directory: << parameters.working_directory >>
     steps:
       - checkout
       - run:
           name: "terraform init"
           command: terraform init
+          working_directory: << parameters.working_directory >>
       - run:
           name: "terraform validate"
           command: terraform validate
+          working_directory: << parameters.working_directory >>
       - run:
           name: "terraform plan"
           command: terraform plan
+          working_directory: << parameters.working_directory >>
 
   exec_iac:
     executor: terraform
