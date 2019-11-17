@@ -38,6 +38,7 @@ jobs:
     parameters:
       working_directory: 
         description: working directory
+        type: string
         default: ~/
       inventory:
         description: define inventory
