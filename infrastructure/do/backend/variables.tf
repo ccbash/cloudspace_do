@@ -7,4 +7,4 @@ variable "domain"  { }
 variable "region"  { }
 variable "ssh_key" { }
 
-variable "hosts"   { type = map() }
+variable "hosts"   { type = map }

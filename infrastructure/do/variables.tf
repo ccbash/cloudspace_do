@@ -3,4 +3,4 @@
 variable "name"   { }
 variable "domain" { }
 variable "region" { }
-variable "infra"  { default = {} }
+variable "infra"  { type = map }
