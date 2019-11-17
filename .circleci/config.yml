@@ -8,14 +8,23 @@ executors:
   terraform:
     docker: 
       - image: "hashicorp/terraform:light"
-#        entrypoint: "/usr/bin/env"
-#        environment: 
-#          PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 jobs:
-
   validate_cm:
     executor: ansible
+    parameters:
+      working_directory: 
+        description: working directory
+        default: ~/
+      inventory:
+        description: define inventory
+        type: sting
+        default: inventory
+      playbook: 
+        description: define playbook
+        type: string
+        default: main.yml
+    working_directory: << parameters.working_directory >>
     steps:
       - checkout
       - run:
@@ -23,10 +32,10 @@ jobs:
           command: yamllint .
       - run:
           name: "Ansible Linting"
-          command: ansible-lint main.yml
+          command: ansible-lint << parameters.playbook >>
       - run:
           name: "Ansible Syntax Check"
-          command: ansible-playbook -i inventory main.yml --syntax-check
+          command: ansible-playbook -i << parameters.inventory >> << parameters.playbook >> --syntax-check
 
   validate_iac:
     executor: terraform
@@ -93,7 +102,6 @@ workflows:
   validate_test_deploy:
     jobs:
       - validate_cm:
-          context: $CIRCLE_BRANCH
           filters:
             branches: 
               ignore: ["prod_cloud"]
@@ -118,3 +126,7 @@ workflows:
           filters:
             branches:
               only: ["prod_cloud"]
+
+commands:
+  validate_ansible:
+
