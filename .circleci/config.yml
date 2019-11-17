@@ -23,7 +23,7 @@ jobs:
       working_directory: 
         description: working directory
         type: string
-        default: ./
+        default: ./infrastructure
       inventory:
         description: define inventory
         type: string
@@ -53,7 +53,7 @@ jobs:
       working_directory: 
         description: working directory
         type: string
-        default: ./iac
+        default: ./infrastructure
     steps:
       - checkout
       - run:
@@ -75,7 +75,7 @@ jobs:
       working_directory: 
         description: working directory
         type: string
-        default: ./iac
+        default: ./infrastructure
       destroy: 
         description: destroy infrastructure if needed
         type: boolean
@@ -99,7 +99,7 @@ jobs:
       working_directory: 
         description: working directory
         type: string
-        default: ./
+        default: ./infrastructure
       inventory:
         description: define inventory
         type: string
