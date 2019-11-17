@@ -17,9 +17,9 @@ module "subnet" {
 module "docker1" {
   source = "../modules/compute/instance"
   
-  name          = keys( vars.hosts )[0]
-  image         = values( vars.hosts )[0]["image"]
-  instance_type = values( vars.hosts )[0]["instance_type"]
+  name          = keys( var.hosts )[0]
+  image         = values( var.hosts )[0]["image"]
+  instance_type = values( var.hosts )[0]["instance_type"]
   ssh_key       = var.ssh_key
   subnet        = module.subnet
   ingress_ports = [ [22, "tcp"] ]
