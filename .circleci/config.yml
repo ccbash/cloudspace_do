@@ -1,6 +1,29 @@
 ---
 version: 2.1
 
+workflows:
+  version: 2
+  validate_test_deploy:
+    jobs:
+      - validate_cm:
+          filters:
+            branches: 
+              ignore: ["prod_cloud"]
+      - validate_iac:
+          filters:
+            branches: 
+              ignore: ["prod_cloud"]
+      - deploy_iac:
+          filters:
+            branches:
+              only: ["prod_cloud"]
+      - deploy_cm:
+          requires:
+            - deploy_iac
+          filters:
+            branches:
+              only: ["prod_cloud"]
+
 executors:  
   ansible:
     docker:
@@ -18,7 +41,7 @@ jobs:
         default: ~/
       inventory:
         description: define inventory
-        type: sting
+        type: string
         default: inventory
       playbook: 
         description: define playbook
@@ -39,15 +62,18 @@ jobs:
 
   validate_iac:
     executor: terraform
+    working_directory: ./iac
     steps:
-      - checkout          
+      - checkout
       - run:
-          name: check iac (terraform)
-          working_directory: ./iac
-          command: |
-            terraform init
-            terraform validate
-            terraform plan
+          name: "terraform init"
+          command: terraform init
+      - run:
+          name: "terraform validate"
+          command: terraform validate
+      - run:
+          name: "terraform plan"
+          command: terraform plan
 
   test_cm:
     executor: ansible
@@ -96,36 +122,6 @@ jobs:
       - run:
           working_directory: ./cm
           command: ansible-playbook main.yml
-
-workflows:
-  version: 2
-  validate_test_deploy:
-    jobs:
-      - validate_cm:
-          filters:
-            branches: 
-              ignore: ["prod_cloud"]
-      - validate_iac:
-          filters:
-            branches: 
-              ignore: ["prod_cloud"]
-      - test_cm:
-          requires:
-            - validate_cm
-            - validate_iac
-          filters:
-            branches: 
-              ignore: ["prod_cloud"]
-      - deploy_iac:
-          filters:
-            branches:
-              only: ["prod_cloud"]
-      - deploy_cm:
-          requires:
-            - deploy_iac
-          filters:
-            branches:
-              only: ["prod_cloud"]
 
 commands:
   validate_ansible:
