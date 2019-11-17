@@ -2,27 +2,11 @@
 version: 2.1
 
 workflows:
-  version: 2
+  version: 2.1
   validate_test_deploy:
     jobs:
-      - validate_cm:
-          filters:
-            branches: 
-              ignore: ["prod_cloud"]
-      - validate_iac:
-          filters:
-            branches: 
-              ignore: ["prod_cloud"]
-      - deploy_iac:
-          filters:
-            branches:
-              only: ["prod_cloud"]
-      - deploy_cm:
-          requires:
-            - deploy_iac
-          filters:
-            branches:
-              only: ["prod_cloud"]
+      - validate_cm
+      - validate_iac
 
 executors:  
   ansible:
@@ -39,7 +23,7 @@ jobs:
       working_directory: 
         description: working directory
         type: string
-        default: ~/
+        default: ./
       inventory:
         description: define inventory
         type: string
@@ -48,22 +32,29 @@ jobs:
         description: define playbook
         type: string
         default: main.yml
-    working_directory: << parameters.working_directory >>
     steps:
       - checkout
       - run:
           name: "YAMl Linting"
           command: yamllint .
+          working_directory: << parameters.working_directory >>
       - run:
           name: "Ansible Linting"
           command: ansible-lint << parameters.playbook >>
+          working_directory: << parameters.working_directory >>
       - run:
           name: "Ansible Syntax Check"
           command: ansible-playbook -i << parameters.inventory >> << parameters.playbook >> --syntax-check
+          working_directory: << parameters.working_directory >>
 
   validate_iac:
     executor: terraform
-    working_directory: ./iac
+    parameters:
+      working_directory: 
+        description: working directory
+        type: string
+        default: ./iac
+    working_directory: << parameters.working_directory >>
     steps:
       - checkout
       - run:
@@ -76,54 +67,51 @@ jobs:
           name: "terraform plan"
           command: terraform plan
 
-  test_cm:
-    executor: ansible
+  exec_iac:
+    executor: terraform
+    parameters:
+      working_directory: 
+        description: working directory
+        type: string
+        default: ./iac
+      destroy: 
+        description: destroy infrastructure if needed
+        type: boolean
+        default: false
+    working_directory: << parameters.working_directory >>
     steps:
       - checkout
       - run:
-          name: install and init terraform
-          working_directory: ./cm/molecule/default/terraform
-          command: |
-            wget https://releases.hashicorp.com/terraform/0.12.12/terraform_0.12.12_linux_amd64.zip
-            unzip terraform_0.12.12_linux_amd64.zip
-            ./terraform init
+          name: "Initialize"
+          command: terraform init
       - run:
-          name: build TestInfra (terraform)
-          working_directory: ./cm/molecule/default/terraform
-          command: |
-            ./terraform plan -out build.tfplan
-            ./terraform apply -input=false build.tfplan
+          name: "Planning Infrastructure changes"
+          command: terraform plan <<# parameters.destroy >>destroy <</ parameters.destroy >>-out terraform.tfplan
+      - run:
+          name: "Apply Infrastructure changes"
+          command: terraform apply -input=false terraform.tfplan
+
+  exec_cm:
+    executor: ansible
+    parameters:
+      working_directory: 
+        description: working directory
+        type: string
+        default: ./
+      inventory:
+        description: define inventory
+        type: string
+        default: inventory
+      playbook: 
+        description: define playbook
+        type: string
+        default: main.yml
+    steps:
+      - checkout
       - add_ssh_keys:
           fingerprints:
             - "80:5f:c6:dc:47:20:80:1f:7b:bf:63:f2:bc:b7:24:a1"
       - run:
-          name: running molecule tests
-          working_directory: ./cm
-          command: molecule test
-      - run:
-          name: cleanup TestInfra (terraform)
-          working_directory: ./cm/molecule/default/terraform
-          command: |
-           ./terraform plan -destroy -out destroy.tfplan
-           ./terraform apply -input=false destroy.tfplan
-          when: always
-
-  deploy_iac:
-    executor: terraform
-    steps:
-      - checkout
-      - run:
-          working_directory: ./iac
-          command: ansible-playbook main.yml
-
-  deploy_cm:
-    executor: ansible
-    steps:
-      - checkout
-      - run:
-          working_directory: ./cm
-          command: ansible-playbook main.yml
-
-commands:
-  validate_ansible:
-
+          name: "Ansible Syntax Check"
+          command: ansible-playbook -i << parameters.inventory >> << parameters.playbook >> --syntax-check
+          working_directory: << parameters.working_directory >>
