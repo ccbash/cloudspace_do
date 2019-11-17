@@ -26,11 +26,9 @@ resource "digitalocean_droplet" "this" {
 
 resource "local_file" "foo" {
     content  = <<-EOT
-      ${var.name}:
-        ansible_ssh_host: ${digitalocean_droplet.this.ipv4_address}
-        ${ymlencode(ansible_vars)}
+      ansible_ssh_host: ${digitalocean_droplet.this.ipv4_address}
       EOT
-    filename = "${path.root}/inventory/${var.name}.yml"
+    filename = "${path.root}/inventory/host_vars/${var.name}.yml"
 }
 
 module "dns_consul" {

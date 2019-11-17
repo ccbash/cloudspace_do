@@ -18,10 +18,14 @@ terraform {
  * Variables
  * ************************************************************ */
 
+locals {
+  cloud  = "${yamldecode(file("inventory/inventory.yml"))["digitalocean"]}"
+  domain = "ansible.local"
+}
+
 variable "name"   { default = "do" }
 variable "domain" { default = "ccbash.de" }
 variable "region" { default = "FRA1" }
-variable "cidr"   { default = "10.1.0.0/16" }
 
 /* ***************************************************************
  * Provider
@@ -37,13 +41,14 @@ provider "digitalocean" {
  
 module "zone_dns" {
    source      = "./do/modules/network/dns_zone"
-   zone        = "${var.name}.${var.domain}"
+   zone        = "${local.cloud.vars.name}.${local.cloud.vars.domain}"
 } 
 
 module "cloudspace_do" {
-  source     = "./do"
+  source = "./do"
   
-  name       = var.name
-  domain     = module.zone_dns.zone
-  region     = var.region
+  name   = local.cloud.vars.name
+  domain = module.zone_dns.zone
+  region = local.cloud.vars.region
+  infra  = local.cloud.children 
 }

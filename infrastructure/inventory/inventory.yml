@@ -1,0 +1,27 @@
+---
+
+digitalocean:
+  vars:
+    name: "do"
+    domain: "do.ccbash.de"
+    region: "FRA1"
+    ansible_ssh_user: "core"
+    dockerswarm_controller: "control.{{ domain }}"
+    roles: [ "COREOS", "DOCKERSWARM" ]
+
+  children:
+    FRONTEND:
+      hosts:
+        control.do.ccbash.de:
+          dockerswarm_nodetype: "Manager"
+          name: "control"
+          image: "coreos-stable"
+          instance_type: "s-1vcpu-1gb"
+
+    BACKEND:
+      hosts:
+        docker1.do.ccbash.de:
+          dockerswarm_nodetype: "Worker"
+          name: "docker1"
+          image: "coreos-stable"
+          instance_type: "s-1vcpu-1gb"

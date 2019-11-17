@@ -10,6 +10,8 @@ module "frontend" {
    domain     = var.domain
    region     = var.region
    ssh_key    = digitalocean_ssh_key.ansible
+   
+   hosts    = vars.infra.FRONTEND.hosts
 }
 
 
@@ -24,6 +26,8 @@ module "backend" {
    domain     = var.domain
    region     = var.region
    ssh_key    = digitalocean_ssh_key.ansible
+   
+   hosts    = vars.infra.BACKEND.hosts
 }
 
 

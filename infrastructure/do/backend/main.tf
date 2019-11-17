@@ -17,16 +17,10 @@ module "subnet" {
 module "docker1" {
   source = "../modules/compute/instance"
   
-  name          = "docker1.${var.name}"
-  image         = "coreos-stable"
-  instance_type = "s-1vcpu-1gb"  
+  name          = keys( vars.hosts )[0]
+  image         = values( vars.hosts )[0]["image"]
+  instance_type = values( vars.hosts )[0]["instance_type"]
   ssh_key       = var.ssh_key
   subnet        = module.subnet
   ingress_ports = [ [22, "tcp"] ]
-  ansible_vars   = { 
-        roles = [ "COREOS", "DOCKERSWARM" ]
-        dockerswarm_nodetype = "Manager"
-        dockerswarm_controller = "control.${var.name}"
-        ansible_ssh_user = "core"
-  }
 }

@@ -2,8 +2,8 @@
 
 - hosts: all
   gather_facts: false
-  tasks:
 
+  tasks:
     - name: "MAIN - SSH Connection Trial (bootstraping)"
       include_tasks: main_ssh.yml
       when:

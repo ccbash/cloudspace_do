@@ -1,5 +1,6 @@
 /* VARIABLES */
 
-variable "name"    { }
-variable "domain"  { }
-variable "region"  { }
+variable "name"   { }
+variable "domain" { }
+variable "region" { }
+variable "infra"  { default = {} }
