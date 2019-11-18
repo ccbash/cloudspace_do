@@ -7,7 +7,13 @@ workflows:
     jobs:
       - validate_cm
       - validate_iac
-
+      - exec_iac:
+          requires:
+            - validate_iac
+      - exec_cm:
+          requires:
+            - validate_cm
+            - exec_iac
 executors:  
   ansible:
     docker:
