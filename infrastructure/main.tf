@@ -45,8 +45,8 @@ module "zone_dns" {
   zone   = "${local.cloud.vars.name}.${local.cloud.vars.domain}"
 } 
 
-module "cloudspace_do" {
-  source = "./do"
+module "cloudspace" {
+  source = "./cloudspace"
   
   name   = local.cloud.vars.name
   domain = module.zone_dns.zone

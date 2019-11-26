@@ -86,19 +86,21 @@ jobs:
         description: destroy infrastructure if needed
         type: boolean
         default: false
-    working_directory: << parameters.working_directory >>
     steps:
       - checkout
       - run:
           name: "Initialize"
           command: terraform init
+          working_directory: << parameters.working_directory >>
       - run:
           name: "Planning Infrastructure changes"
           command: terraform plan <<# parameters.destroy >>destroy <</ parameters.destroy >>-out terraform.tfplan
+          working_directory: << parameters.working_directory >>
       - run:
           name: "Apply Infrastructure changes"
           command: terraform apply -input=false terraform.tfplan
-
+          working_directory: << parameters.working_directory >>
+          
   exec_cm:
     executor: ansible
     parameters:
